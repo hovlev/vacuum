@@ -1,0 +1,26 @@
+@import './variables.css';
+@import './resets.css';
+
+body {
+  background: #EEE;
+}
+
+td {
+  height: 5rem;
+  position: relative;
+  text-align: center;
+  width: 5rem;
+}
+
+td.dirt span {
+  background: rgba(139, 69, 19, 0.5);
+  position: absolute;
+  height: 100%;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+
+td.wall {
+  background: #000;
+}

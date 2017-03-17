@@ -1,0 +1,4 @@
+export default {
+  LOAD_BOARD: 'LOAD_BOARD',
+  LOADED_BOARD: 'LOADED_BOARD'
+};
