@@ -24,3 +24,18 @@ td.dirt span {
 td.wall {
   background: #000;
 }
+
+.hide-text {
+  text-indent: 100%; /* needs firefox fix */
+  white-space: nowrap;
+  overflow: hidden; 
+}
+
+.vacuum_cleaner {
+  @extend .hide-text;
+  height: 1rem;
+  position: relative;
+  width: 1rem;
+  border-radius: 1rem;
+  background: #FF0000;
+}

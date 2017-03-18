@@ -1,4 +1,6 @@
 export default {
+  TILE_SUCK: 'TILE_SUCK',
+  TILE_DIRT: 'TILE_DIRT',
   LOAD_BOARD: 'LOAD_BOARD',
   LOADED_BOARD: 'LOADED_BOARD'
 };

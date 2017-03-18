@@ -33,6 +33,7 @@
     "postcss-cssnext": "^2.9.0",
     "postcss-import": "^9.0.0",
     "postcss-loader": "^1.2.1",
+    "postcss-extend": "^1.0.5",
     "tape": "^4.6.3",
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"
