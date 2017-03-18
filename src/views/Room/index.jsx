@@ -13,7 +13,13 @@ const Room = ({ dispatch, currentRoom }) =>
               cell = parseInt(cell);
               let cellClass = cell !== 0 ? isNaN(cell) ? 'wall' : 'dirt' : '';
               let opacity = isNaN(cell) ? 1 : cell / 5;
-              return <td key={j} onClick={() => dispatch({ type: actions.TILE_SUCK, payload: {x: j, y: i} }) } className={cellClass}>{cell}<span style={{opacity: opacity}}></span></td>
+              return <td 
+                key={j} 
+                onClick={() => dispatch({ type: actions.TILE_SUCK, payload: {x: j, y: i} }) } 
+                className={cellClass}>
+                  {cell}
+                  <span style={{opacity: opacity}}></span>
+                </td>
             }
           )}
         </tr>
