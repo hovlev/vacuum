@@ -4,7 +4,7 @@ import Room from '../Room';
 
 const App = () =>
   <div>
-  	<Room />
+    <Room />
   </div>;
 
 export default App;

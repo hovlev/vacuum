@@ -2,14 +2,21 @@ import { assoc, merge, pipe, nth, prop, update, subtract } from 'ramda';
 import actions from '../actions';
 
 const init = {
-  currentRoom: []
+  currentRoom: [],
+  vacuum: {
+    position: {
+      current: {x: 0, y: 0},
+      previous: {x: 0, y: 0}
+    },
+    totalSucked: 0
+  }
 };
 
 const getTile = (payload, state) => {
   return pipe(
     prop('currentRoom'),
-    nth(payload.row),
-    nth(payload.col)
+    nth(payload.y),
+    nth(payload.x)
   )(state);
 };
 
@@ -20,17 +27,18 @@ const tileSuck = (payload, state) => {
     'currentRoom',
     // value to set to above given property
     update(
-      payload.row, // update the specific row index with the result of pipe
+      payload.y, // update the specific y (row) index with the result of pipe
       pipe(
-        nth(payload.row), // nth row of the board
-        update(payload.col, subtract(tile, 1)) // update specific column index in the row with the reduced amount of dirt
-      )(prop('currentRoom', state)),
+        prop('currentRoom'),
+        nth(payload.y), // nth y (row) of the board
+        update(payload.x, subtract(tile, 1)) // update specific x (col) index in the y (row) with the reduced amount of dirt
+      )(state),
       prop('currentRoom', state)
     ),
     // object in which to set the above property and value
     state
   ) : state;
-}
+};
 
 // { type = 'ADD_TODO', payload = {message: 'shopping', completed: false}}
 export default (state = init, action) => {
@@ -41,6 +49,10 @@ export default (state = init, action) => {
 
     case actions.TILE_SUCK:
       return tileSuck(action.payload, state);
+
+    case actions.VACUUM_MOVE:
+      console.log(action.payload, '<<<<<<<<');
+      return state;
 
     default:
       return state;
