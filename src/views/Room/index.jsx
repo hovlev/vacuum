@@ -17,7 +17,7 @@ const Room = ({ dispatch, currentRoom, dirtLeft, startTime, lastMoveTime, vacuum
     <div className="room" style={{width: calculateWidth(currentRoom)}}>
       <Vacuum vacuum={vacuum} currentRoom={currentRoom} />
       {!dirtLeft && currentRoom.length ? 
-        <div className="won" onClick={() => { dispatch({ type: actions.LOAD_BOARD })}}>
+        <div className="won" onClick={() => { dispatch({ type: actions.RESET_BOARD })}}>
           <p>You won in {calculateTime(lastMoveTime, startTime)} seconds! Reset?</p>
         </div> 
         : ''}

@@ -16,13 +16,12 @@ const init = {
   }
 };
 
-const getTile = (payload, state) => {
-  return pipe(
+const getTile = (payload, state) => 
+  pipe(
     prop('currentRoom'),
     nth(payload.y),
     nth(payload.x)
   )(state);
-};
 
 const tileSuck = (payload, state) => {
   let tile = getTile(payload, state);
@@ -41,7 +40,7 @@ const tileSuck = (payload, state) => {
     ),
     // object in which to set the above property and value
     state
-  ) : state
+  ) : state;
 };
 
 const parseRoom = room => map(item => map(tile => parseInt(tile), item), room);
@@ -53,20 +52,25 @@ const getDirection = item => {
     y: subtract(path(['current', 'y'], item), path(['previous', 'y'], item))
   };
   return nth(0, keys(filter(modifier => whereEq(difference)(modifier), constants.modifier)));
-}
+};
+
+const resetRoom = (room, state) => 
+  merge(state, {
+    cachedRoom: room,
+    currentRoom: room,
+    dirtLeft: returnSum(room),
+    startTime: new Date().getTime(),
+    vacuum: prop('vacuum', init)
+  });
 
 export default (state = init, action) => {
   
   switch (action.type) {
     case actions.LOADED_BOARD:
-      let room = parseRoom(action.payload.room);
-      return merge(state, {
-        cachedRoom: room,
-        currentRoom: room,
-        dirtLeft: returnSum(room),
-        startTime: new Date().getTime(),
-        vacuum: prop('vacuum', init)
-      });
+      return resetRoom(parseRoom(action.payload.room, state));
+
+    case actions.RESET_BOARD:
+      return resetRoom(prop('cachedRoom', state), state);
 
     case actions.TILE_SUCK:
       return tileSuck(action.payload, state);
@@ -80,7 +84,7 @@ export default (state = init, action) => {
       };
       let roomAfterSuck = tileSuck(next, state);
       let dirtLeft = returnSum(prop('currentRoom', roomAfterSuck));
-      let newPosition = {previous: current, current: next};
+      let newPosition = { previous: current, current: next };
       newPosition.direction = getDirection(newPosition);
       return !isNaN(getTile(next, state)) ? merge(state, {
         vacuum: assoc('position', newPosition, prop('vacuum', state)),
