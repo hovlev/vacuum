@@ -58,17 +58,10 @@ export default (state = init, action) => {
         x: min(max(0, add(prop('x', current), positionModifier.x)), subtract(length(nth(0, prop('currentRoom', state))), 1)),
         y: min(max(0, add(prop('y', current), positionModifier.y)), subtract(length(prop('currentRoom', state)), 1))
       };
-      // merge(state, {
-      //   board: buildBoard(state),
-      //   previousBoards: prepend(prop('board', state), prop('previousBoards', state)),
-      //   score: adjust(add(1), path([ 'winner', 'player' ], state), prop('score', state)),
-      //   won: false
-      // });
       return !isNaN(getTile(next, state)) ? merge(state, {
         vacuum: assocPath(['position', 'current'], next, prop('vacuum', state)),
         currentRoom: prop('currentRoom', tileSuck(next, state))
       }) : state;
-      // return assocPath(['vacuum', 'position', 'current'], next, state)
 
     default:
       return state;

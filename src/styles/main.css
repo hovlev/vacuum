@@ -21,18 +21,16 @@ body {
   border: 1rem solid #000;
   margin: 0 auto;
   position: relative;
-  width: 600px;
 }
 
 table {
   border-spacing: 0;
   table-layout: fixed;
-  width: 600px;
+  width: 100%;
 }
 
 td {
   box-sizing: border-box;
-  height: 100px;
   position: relative;
   text-align: center;
 }
@@ -48,6 +46,10 @@ td.dirt span {
 
 td.wall {
   background: #000;
+}
+
+tr {
+  height: 100px;
 }
 
 .hide-text {
