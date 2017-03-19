@@ -1,4 +1,4 @@
-import { assoc, assocPath, merge, pipe, nth, prop, update, subtract, add, min, max, path, length, map, flatten, sum, filter } from 'ramda';
+import { assoc, assocPath, merge, pipe, nth, prop, update, subtract, add, min, max, path, length, map, flatten, sum, filter, whereEq, keys } from 'ramda';
 import actions from '../actions';
 import constants from '../constants';
 
@@ -9,7 +9,8 @@ const init = {
   vacuum: {
     position: {
       current: {x: 0, y: 0},
-      previous: {x: 0, y: 0}
+      previous: {x: 0, y: 0},
+      direction: 'down'
     },
     totalSucked: 0
   }
@@ -46,6 +47,14 @@ const tileSuck = (payload, state) => {
 const parseRoom = room => map(item => map(tile => parseInt(tile), item), room);
 const returnSum = array => sum(filter(n => n, flatten(array)));
 
+const getDirection = item => {
+  let difference = {
+    x: subtract(path(['current', 'x'], item), path(['previous', 'x'], item)),
+    y: subtract(path(['current', 'y'], item), path(['previous', 'y'], item))
+  };
+  return nth(0, keys(filter(modifier => whereEq(difference)(modifier), constants.modifier)));
+}
+
 export default (state = init, action) => {
   
   switch (action.type) {
@@ -71,8 +80,10 @@ export default (state = init, action) => {
       };
       let roomAfterSuck = tileSuck(next, state);
       let dirtLeft = returnSum(prop('currentRoom', roomAfterSuck));
+      let newPosition = {previous: current, current: next};
+      newPosition.direction = getDirection(newPosition);
       return !isNaN(getTile(next, state)) ? merge(state, {
-        vacuum: assocPath(['position', 'current'], next, prop('vacuum', state)),
+        vacuum: assoc('position', newPosition, prop('vacuum', state)),
         currentRoom: prop('currentRoom', roomAfterSuck),
         dirtLeft: dirtLeft,
         lastMoveTime: dirtLeft ? new Date().getTime() : prop('lastMoveTime', roomAfterSuck) // if there is no dirt left (the game has been won), just return the lastMoveTime rather than creating a new date

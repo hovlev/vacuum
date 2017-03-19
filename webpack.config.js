@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
@@ -8,7 +9,7 @@ module.exports = {
   },
   output: {
     pathinfo: true,
-    path: __dirname + '/public',
+    path: path.resolve(__dirname + '/public'),
     filename: 'vacuum.js'
   },
   resolve: {

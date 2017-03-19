@@ -2,27 +2,26 @@ import { connect } from 'react-redux';
 import actions from '../../actions';
 import constants from '../../constants';
 import Vacuum from './vacuum';
+import Details from './details';
+import Table from './table';
+
+const calculateWidth = currentRoom => 
+  currentRoom.length ? currentRoom[0].length * constants.dimensions.cell : constants.dimensions.cell;
+
+const calculateTime = (lastMoveTime, startTime) =>
+  (lastMoveTime - startTime) / 1000;
 
 const Room = ({ dispatch, currentRoom, dirtLeft, startTime, lastMoveTime, vacuum }) =>
   <div>
-    <div className="game_details"><p>Left to suck: {dirtLeft}</p></div>
-    <div className="room" style={{width: currentRoom.length ? currentRoom[0].length * constants.dimensions.cell : constants.dimensions.cell}}>
+    <Details dispatch={dispatch} vacuum={vacuum} dirtLeft={dirtLeft} />
+    <div className="room" style={{width: calculateWidth(currentRoom)}}>
       <Vacuum vacuum={vacuum} currentRoom={currentRoom} />
-      {!dirtLeft && currentRoom.length ? <div className="won" onClick={() => { dispatch({ type: actions.LOAD_BOARD })}}><p>You won in {(lastMoveTime - startTime) / 1000} seconds! Reset?</p></div> : ''}
-      <table>
-        <tbody>
-        {currentRoom.map((row, i) =>
-          <tr key={i}>
-            {row.map((cell, j) => <td 
-              key={j} 
-              className={cell !== 0 ? isNaN(cell) ? 'wall' : 'dirt' : ''}>
-                <span style={{opacity: isNaN(cell) ? 1 : cell / 5}}></span>
-              </td>
-            )}
-          </tr>
-        )}
-        </tbody>
-      </table>
+      {!dirtLeft && currentRoom.length ? 
+        <div className="won" onClick={() => { dispatch({ type: actions.LOAD_BOARD })}}>
+          <p>You won in {calculateTime(lastMoveTime, startTime)} seconds! Reset?</p>
+        </div> 
+        : ''}
+      <Table currentRoom={currentRoom} />
     </div>
   </div>;
 
