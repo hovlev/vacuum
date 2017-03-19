@@ -6,7 +6,9 @@ import constants from '../constants';
 const keyHandler = (ch) =>
   (e) => {
     let direction = constants.keyCodes[e.keyCode];
-    if (direction) ch.put({ type: actions.VACUUM_MOVE, payload: direction });
+    if (direction) {
+      ch.put({ type: actions.VACUUM_MOVE, payload: direction });
+    }
   };
   
 const listenKeydown = function* () {

@@ -1,9 +1,11 @@
-import { assoc, assocPath, merge, pipe, nth, prop, update, subtract, add, min, max, path, length } from 'ramda';
+import { assoc, assocPath, merge, pipe, nth, prop, update, subtract, add, min, max, path, length, map, flatten, sum, filter } from 'ramda';
 import actions from '../actions';
 import constants from '../constants';
 
 const init = {
   currentRoom: [],
+  startTime: null,
+  lastMoveTime: null,
   vacuum: {
     position: {
       current: {x: 0, y: 0},
@@ -41,12 +43,21 @@ const tileSuck = (payload, state) => {
   ) : state
 };
 
-// { type = 'ADD_TODO', payload = {message: 'shopping', completed: false}}
+const parseRoom = room => map(item => map(tile => parseInt(tile), item), room);
+const returnSum = array => sum(filter(n => n, flatten(array)));
+
 export default (state = init, action) => {
   
   switch (action.type) {
     case actions.LOADED_BOARD:
-      return assoc('currentRoom', action.payload.room, state);
+      let room = parseRoom(action.payload.room);
+      return merge(state, {
+        cachedRoom: room,
+        currentRoom: room,
+        dirtLeft: returnSum(room),
+        startTime: new Date().getTime(),
+        vacuum: prop('vacuum', init)
+      });
 
     case actions.TILE_SUCK:
       return tileSuck(action.payload, state);
@@ -58,9 +69,13 @@ export default (state = init, action) => {
         x: min(max(0, add(prop('x', current), positionModifier.x)), subtract(length(nth(0, prop('currentRoom', state))), 1)),
         y: min(max(0, add(prop('y', current), positionModifier.y)), subtract(length(prop('currentRoom', state)), 1))
       };
+      let roomAfterSuck = tileSuck(next, state);
+      let dirtLeft = returnSum(prop('currentRoom', roomAfterSuck));
       return !isNaN(getTile(next, state)) ? merge(state, {
         vacuum: assocPath(['position', 'current'], next, prop('vacuum', state)),
-        currentRoom: prop('currentRoom', tileSuck(next, state))
+        currentRoom: prop('currentRoom', roomAfterSuck),
+        dirtLeft: dirtLeft,
+        lastMoveTime: dirtLeft ? new Date().getTime() : prop('lastMoveTime', roomAfterSuck) // if there is no dirt left (the game has been won), just return the lastMoveTime rather than creating a new date
       }) : state;
 
     default:
