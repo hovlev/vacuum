@@ -26,12 +26,6 @@ body {
 /* Layout
 ========================================================================== */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 main {
   display: block;
 }

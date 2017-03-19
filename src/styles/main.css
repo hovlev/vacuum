@@ -1,25 +1,40 @@
 @import './variables.css';
 @import './resets.css';
 
+h1 {
+  margin: 1rem 0 0 0;
+  text-align: center;
+}
+
+p {
+  font-size: 0.75rem;
+  margin: 0.5rem 0;
+  padding: 0 1rem;
+  text-align: center;
+}
+
 body {
   background: #EEE;
 }
 
 .room {
-  float: left;
-  margin-left: 100px;
+  border: 1rem solid #000;
+  margin: 0 auto;
   position: relative;
+  width: 600px;
 }
 
 table {
   border-spacing: 0;
+  table-layout: fixed;
+  width: 600px;
 }
 
 td {
-  height: 5rem;
+  box-sizing: border-box;
+  height: 100px;
   position: relative;
   text-align: center;
-  width: 5rem;
 }
 
 td.dirt span {
@@ -43,11 +58,12 @@ td.wall {
 
 .vacuum_cleaner {
   @extend .hide-text;
-  height: 5rem;
+  height: 100px;
   position: absolute;
   left: 0%;
   top: 0%;
-  width: 5rem;
-  border-radius: 5rem;
+  width: 100px;
+  border-radius: 100px;
   background: #FF0000;
+  transition: all 0.25s;
 }

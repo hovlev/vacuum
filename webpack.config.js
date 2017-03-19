@@ -9,7 +9,7 @@ module.exports = {
   output: {
     pathinfo: true,
     path: __dirname + '/public',
-    filename: 'todo.js'
+    filename: 'vacuum.js'
   },
   resolve: {
     modulesDirectories: [ 'node_modules' ],
@@ -30,7 +30,7 @@ module.exports = {
   },
   plugins: [
     new webpack.ProvidePlugin({ 'React': 'react' }),
-    new ExtractTextPlugin('todo.css')
+    new ExtractTextPlugin('vacuum.css')
   ],
   devtool: 'source-map'
 };

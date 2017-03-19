@@ -1,5 +1,6 @@
-import { assoc, merge, pipe, nth, prop, update, subtract } from 'ramda';
+import { assoc, assocPath, merge, pipe, nth, prop, update, subtract, add, min, max, path, length } from 'ramda';
 import actions from '../actions';
+import constants from '../constants';
 
 const init = {
   currentRoom: [],
@@ -37,7 +38,7 @@ const tileSuck = (payload, state) => {
     ),
     // object in which to set the above property and value
     state
-  ) : state;
+  ) : state
 };
 
 // { type = 'ADD_TODO', payload = {message: 'shopping', completed: false}}
@@ -51,8 +52,23 @@ export default (state = init, action) => {
       return tileSuck(action.payload, state);
 
     case actions.VACUUM_MOVE:
-      console.log(action.payload, '<<<<<<<<');
-      return state;
+      let current = path(['vacuum', 'position', 'current'], state);
+      let positionModifier = constants.modifier[action.payload]
+      let next = { 
+        x: min(max(0, add(prop('x', current), positionModifier.x)), subtract(length(nth(0, prop('currentRoom', state))), 1)),
+        y: min(max(0, add(prop('y', current), positionModifier.y)), subtract(length(prop('currentRoom', state)), 1))
+      };
+      // merge(state, {
+      //   board: buildBoard(state),
+      //   previousBoards: prepend(prop('board', state), prop('previousBoards', state)),
+      //   score: adjust(add(1), path([ 'winner', 'player' ], state), prop('score', state)),
+      //   won: false
+      // });
+      return !isNaN(getTile(next, state)) ? merge(state, {
+        vacuum: assocPath(['position', 'current'], next, prop('vacuum', state)),
+        currentRoom: prop('currentRoom', tileSuck(next, state))
+      }) : state;
+      // return assocPath(['vacuum', 'position', 'current'], next, state)
 
     default:
       return state;
