@@ -20,16 +20,16 @@ const listenKeydown = function* () {
   }
 };
 
-const requestBoard = function* () {
+const requestRoom = function* () {
   const json = yield call(() => fetch('/mock/response.json', {method: 'get'})
     .then(res => res.json()));
-  yield put({ type: actions.LOADED_BOARD, payload: json });
+  yield put({ type: actions.LOADED_ROOM, payload: json });
 };
  
 export default function* () {
   yield spawn(listenKeydown);
-  yield call(requestBoard);
-  yield takeLatest(actions.LOAD_BOARD, function* () {
-    yield call(requestBoard);
+  yield call(requestRoom);
+  yield takeLatest(actions.LOAD_ROOM, function* () {
+    yield call(requestRoom);
   });
 }

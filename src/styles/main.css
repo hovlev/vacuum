@@ -1,62 +1,44 @@
 @import './variables.css';
 @import './resets.css';
 
+/* Utilities */
+
+.hide-text {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden; 
+}
+
+.absolute {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.center {
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Global rules */
+
+body {
+  font-family: var(--font-stack);
+}
+
 h1 {
-  margin: 1rem 0 0 0;
+  margin: var(--padding) 0 0 0;
   text-align: center;
 }
 
 p {
   font-size: 0.75rem;
-  margin: 0.5rem 0;
-  padding: 0 1rem;
+  margin: calc(var(--padding) / 2) 0;
+  padding: 0 var(--padding);
   text-align: center;
 }
 
-body {
-  background: #EEE;
-}
-
-.room {
-  border: 1rem solid #000;
-  margin: 0 auto;
-  position: relative;
-}
-
-table {
-  border-spacing: 0;
-  table-layout: fixed;
-  width: 100%;
-}
-
-td {
-  box-sizing: border-box;
-  position: relative;
-  text-align: center;
-}
-
-td.dirt span {
-  background: rgba(139, 69, 19, 0.5);
-  position: absolute;
-  height: 100%;
-  left: 0;
-  top: 0;
-  width: 100%;
-}
-
-td.wall {
-  background: #000;
-}
-
-tr {
-  height: 100px;
-}
-
-.hide-text {
-  text-indent: 100%; /* needs firefox fix */
-  white-space: nowrap;
-  overflow: hidden; 
-}
+/* Game details (dirt left to suck etc) */
 
 .game_details {
   text-align: center;
@@ -66,9 +48,46 @@ tr {
   display: inline-block;
 }
 
+/* Room (table container) */
+
+.room {
+  @extend .center;
+  border: var(--padding) solid #000;
+}
+
+/* Table (tiles) */
+
+table {
+  border-spacing: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+tr {
+  height: var(--tile-size);
+}
+
+td {
+  position: relative;
+  text-align: center;
+}
+
+td.dirt span {
+  @extend .absolute;
+  background: var(--color-brown);
+  height: 100%;
+  width: 100%;
+}
+
+td.wall {
+  background: #000;
+}
+
+/* Won state */
+
 .won {
+  @extend .absolute;
   cursor: pointer;
-  position: absolute;
   width: 100%;
   height: 100%;
   background: rgba(255, 255, 255, 0.9);
@@ -76,20 +95,26 @@ tr {
 }
 
 .won p {
+  @extend .center;
   font-size: 3rem;
-  margin: 0;
-  position: relative;
   text-align: center;
   top: 50%;
   transform: translateY(-50%);
 }
 
-.vacuum_cleaner {
-  @extend .hide-text;
+/* Vacuum cleaner / Roomba! */
 
-  position: absolute;
-  left: 0%;
-  top: 0%;
+.vacuum_cleaner {
+  @extend .absolute;
+  @extend .hide-text;
   background: url("/images/roomba.png") no-repeat center;
   transition: all 0.25s;
+  z-index: 1;
+}
+
+@media (--min-resolution) {
+  .vacuum_cleaner {
+    background-image: url("/images/roomba-large.png");
+    background-size: var(--tile-size) var(--tile-size);
+  }
 }

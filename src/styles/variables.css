@@ -1,4 +1,9 @@
 :root {
   --base-size: 16px;
+  --color-brown: rgba(139, 69, 19, 0.5);
   --font-stack: Helvetica, Arial, sans-serif;
+  --padding: 1rem;
+  --tile-size: 100px;
 }
+
+@custom-media --min-resolution (min-resolution: 192dpi);
