@@ -4,7 +4,7 @@ import constants from '../../constants';
 import Vacuum from './vacuum';
 import Table from './table';
 
-/* TODO consider if this could be part of state */
+/* TODO consider if this could be part of state/helper, probably would be better off elsewhere anyway */
 const calculateWidth = currentRoom => 
   currentRoom.length ? currentRoom[0].length * constants.dimensions.cell : constants.dimensions.cell;
 

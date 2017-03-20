@@ -30,6 +30,7 @@ const getTile = (payload, state) =>
     nth(payload.x)
   )(state);
 
+// fired as the vacuum moves into a tile
 const tileSuck = (payload, state) => {
   let tile = getTile(payload, state);
   return tile > 0 ? assoc(
@@ -50,9 +51,12 @@ const tileSuck = (payload, state) => {
   ) : state;
 };
 
+// fired as the user uses the keyboard cursors
 const vacuumMove = (payload, state) => {
   let current = path(['vacuum', 'position', 'current'], state);
+  // gets the relative position of the next tile
   let positionModifier = constants.modifier[payload]
+  // the next object, or the next tile the vacuum is moving into, is used for generating the room's new state
   let next = { 
     x: min(
       max(0, add(prop('x', current), positionModifier.x)), 
@@ -65,20 +69,28 @@ const vacuumMove = (payload, state) => {
         length(prop('currentRoom', state)), 1)
       )
   };
+  // the room's state after the vacuum has moved into the new tile
   let roomAfterSuck = tileSuck(next, state);
+  // how much dirt is left in the room after sucking
   let dirtLeft = returnSum(prop('currentRoom', roomAfterSuck));
+  // the vacuum's new position details, including the direction it should be facing (based on the movement direction)
   let newPosition = { previous: current, current: next, direction: getDirection(current, next) };
-  return !isNaN(getTile(next, state)) ? merge(state, {
+  return !isNaN(getTile(next, state)) ? merge(state, { // isNaN, if is not a number assume it is a wall
     vacuum: assoc('position', newPosition, prop('vacuum', state)),
     currentRoom: prop('currentRoom', roomAfterSuck),
     dirtLeft: dirtLeft,
-    lastMoveTime: dirtLeft ? new Date().getTime() : prop('lastMoveTime', roomAfterSuck) // if there is no dirt left (the game has been won), just return the lastMoveTime rather than creating a new date
+    // Note: if there is no dirt left (the game has been won), just return the lastMoveTime rather than creating a new date
+    lastMoveTime: dirtLeft ? new Date().getTime() : prop('lastMoveTime', roomAfterSuck)
   }) : state;
 };
 
+// runs through the array, turning strings from the JSON object into integers (for tile dirt levels)
 const parseRoom = room => map(item => map(tile => parseInt(tile), item), room);
+
+// returns the total value of integers in an multi-dimensional (or any) array
 const returnSum = array => sum(filter(n => n, flatten(array)));
 
+// works out the direction the vacuum should be facing based on previous/new position
 const getDirection = (current, next) => {
   let difference = {
     x: subtract(prop('x', next), prop('x', current)),
@@ -87,6 +99,7 @@ const getDirection = (current, next) => {
   return nth(0, keys(filter(modifier => whereEq(difference)(modifier), constants.modifier)));
 };
 
+// resets the room based on the room argument
 const resetRoom = (room, state) => 
   merge(state, {
     cachedRoom: room,
@@ -96,8 +109,10 @@ const resetRoom = (room, state) =>
     vacuum: prop('vacuum', init)
   });
 
+// generates a random dirty tile (between 0 and 3, more likely to be 0)
 const randomTile = () => Math.max(0, Math.floor(Math.random() * 6) - 3);
 
+// generates a random room full of a mixture of dirty and clean tiles, and a random size, DOES NOT add additional walls (TODO)
 const randomRoom = () => {
   let columns = Math.round(Math.random() * 5) + 2;
   let rows = Math.round(Math.random() * 5) + 2;
