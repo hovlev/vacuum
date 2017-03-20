@@ -2,6 +2,7 @@ import { call, takeLatest, put, take, spawn } from 'redux-saga/effects';
 import { channel } from 'redux-saga';
 import actions from '../actions';
 import constants from '../constants';
+import 'isomorphic-fetch';
 
 const keyHandler = (ch) =>
   (e) => {
