@@ -30,6 +30,8 @@ const getTile = (payload, state) =>
     nth(payload.x)
   )(state);
 
+const getVacuumPosition = state => path([ 'vacuum', 'position', 'current' ], state);
+
 // fired as the vacuum moves into a tile
 const tileSuck = (payload, state) => {
   const tile = getTile(payload, state);
@@ -53,7 +55,7 @@ const tileSuck = (payload, state) => {
 
 // fired as the user uses the keyboard cursors
 const vacuumMove = (payload, state) => {
-  const current = path([ 'vacuum', 'position', 'current' ], state);
+  const current = getVacuumPosition(state);
   // gets the relative position of the next tile
   const positionModifier = constants.modifier[payload];
   // the next object, or the next tile the vacuum is moving into, is used for generating the room's new state
@@ -82,6 +84,11 @@ const vacuumMove = (payload, state) => {
     // Note: if there is no dirt left (the game has been won), just return the lastMoveTime rather than creating a new date
     lastMoveTime: dirtLeft ? new Date().getTime() : prop('lastMoveTime', roomAfterSuck)
   }) : state;
+};
+
+const vacuumMoveTo = (payload, state) => {
+  const direction = getDirection(getVacuumPosition(state), payload);
+  return direction ? vacuumMove(direction, state) : state;
 };
 
 // runs through the array, turning strings from the JSON object into integers (for tile dirt levels)
@@ -139,8 +146,13 @@ export default (state = init, action) => {
     case actions.TILE_SUCK:
       return tileSuck(action.payload, state);
 
+    // triggered on keyboard cursor input
     case actions.VACUUM_MOVE:
       return vacuumMove(action.payload, state);
+
+    // triggered when 'clicking' a tile above, below, left or right of the vacuum
+    case actions.VACUUM_MOVE_TO: 
+      return vacuumMoveTo(action.payload, state);
 
     default:
       return state;

@@ -19,7 +19,7 @@ const Room = ({ dispatch, currentRoom, dirtLeft, startTime, lastMoveTime, vacuum
         <p>You won in {calculateTime(lastMoveTime, startTime)} seconds! Reset?</p>
       </div> 
       : ''}
-    <Table currentRoom={currentRoom} />
+    <Table dispatch={dispatch} currentRoom={currentRoom} />
   </div>;
 
 export default connect(state => ({
