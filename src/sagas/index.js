@@ -5,7 +5,7 @@ import constants from '../constants';
 
 const keyHandler = (ch) =>
   (e) => {
-    let direction = constants.keyCodes[e.keyCode];
+    const direction = constants.keyCodes[e.keyCode];
     if (direction) {
       ch.put({ type: actions.VACUUM_MOVE, payload: direction });
     }
@@ -13,7 +13,7 @@ const keyHandler = (ch) =>
   
 const listenKeydown = function* () {
   const keyChannel = channel();
-	window.addEventListener('keydown', keyHandler(keyChannel));
+  window.addEventListener('keydown', keyHandler(keyChannel));
   while (true) {
     const action = yield take(keyChannel);
     yield put(action);
@@ -21,7 +21,7 @@ const listenKeydown = function* () {
 };
 
 const requestRoom = function* () {
-  const json = yield call(() => fetch('/mock/response.json', {method: 'get'})
+  const json = yield call(() => fetch('/mock/response.json', { method: 'get' })
     .then(res => res.json()));
   yield put({ type: actions.LOADED_ROOM, payload: json });
 };

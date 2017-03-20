@@ -6,7 +6,7 @@ const Table = ({ currentRoom }) =>
         {row.map((cell, j) => <td 
           key={j} 
           className={cell !== 0 ? isNaN(cell) ? 'wall' : 'dirt' : ''}>
-            <span style={{opacity: isNaN(cell) ? 1 : cell / 5}}></span>
+            <span style={{ opacity: isNaN(cell) ? 1 : cell / 5 }}></span>
           </td>
         )}
       </tr>

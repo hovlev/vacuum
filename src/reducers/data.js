@@ -16,8 +16,8 @@ const init = {
   lastMoveTime: null,
   vacuum: {
     position: {
-      current: {x: 0, y: 0},
-      previous: {x: 0, y: 0},
+      current: { x: 0, y: 0 },
+      previous: { x: 0, y: 0 },
       direction: 'down'
     }
   }
@@ -32,7 +32,7 @@ const getTile = (payload, state) =>
 
 // fired as the vacuum moves into a tile
 const tileSuck = (payload, state) => {
-  let tile = getTile(payload, state);
+  const tile = getTile(payload, state);
   return tile > 0 ? assoc(
     // name of property to update
     'currentRoom',
@@ -53,11 +53,11 @@ const tileSuck = (payload, state) => {
 
 // fired as the user uses the keyboard cursors
 const vacuumMove = (payload, state) => {
-  let current = path(['vacuum', 'position', 'current'], state);
+  const current = path([ 'vacuum', 'position', 'current' ], state);
   // gets the relative position of the next tile
-  let positionModifier = constants.modifier[payload]
+  const positionModifier = constants.modifier[payload];
   // the next object, or the next tile the vacuum is moving into, is used for generating the room's new state
-  let next = { 
+  const next = { 
     x: min(
       max(0, add(prop('x', current), positionModifier.x)), 
       subtract(
@@ -70,11 +70,11 @@ const vacuumMove = (payload, state) => {
       )
   };
   // the room's state after the vacuum has moved into the new tile
-  let roomAfterSuck = tileSuck(next, state);
+  const roomAfterSuck = tileSuck(next, state);
   // how much dirt is left in the room after sucking
-  let dirtLeft = returnSum(prop('currentRoom', roomAfterSuck));
+  const dirtLeft = returnSum(prop('currentRoom', roomAfterSuck));
   // the vacuum's new position details, including the direction it should be facing (based on the movement direction)
-  let newPosition = { previous: current, current: next, direction: getDirection(current, next) };
+  const newPosition = { previous: current, current: next, direction: getDirection(current, next) };
   return !isNaN(getTile(next, state)) ? merge(state, { // isNaN, if is not a number assume it is a wall
     vacuum: assoc('position', newPosition, prop('vacuum', state)),
     currentRoom: prop('currentRoom', roomAfterSuck),
@@ -92,7 +92,7 @@ const returnSum = array => sum(filter(n => n, flatten(array)));
 
 // works out the direction the vacuum should be facing based on previous/new position
 const getDirection = (current, next) => {
-  let difference = {
+  const difference = {
     x: subtract(prop('x', next), prop('x', current)),
     y: subtract(prop('y', next), prop('y', current))
   };
@@ -114,9 +114,9 @@ const randomTile = () => Math.max(0, Math.floor(Math.random() * 6) - 3);
 
 // generates a random room full of a mixture of dirty and clean tiles, and a random size, DOES NOT add additional walls (TODO)
 const randomRoom = () => {
-  let columns = Math.round(Math.random() * 5) + 2;
-  let rows = Math.round(Math.random() * 5) + 2;
-  let room = times(() => times(
+  const columns = Math.round(Math.random() * 5) + 2;
+  const rows = Math.round(Math.random() * 5) + 2;
+  const room = times(() => times(
     () => randomTile(), columns
   ), rows);
   return append(times(
